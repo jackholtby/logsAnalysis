@@ -17,11 +17,15 @@ SELECT articles.title, count(log.path) AS number
 FROM articles LEFT JOIN log
 ON articles.slug = substring(log.path FROM 10)
 GROUP BY articles.title
-ORDER BY num DESC LIMIT 3;
+ORDER BY number DESC LIMIT 3;
 '''
 
 mostProlificQuery = '''
-INSERT QUERY HERE
+select articles.author, count(log.path) as number
+from articles left join  log
+on articles.slug = substring(log.path from 10)
+group by articles.author
+order by number desc;
 '''
 
 badDaysQuery = '''
