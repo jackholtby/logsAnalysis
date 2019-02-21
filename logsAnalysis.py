@@ -13,7 +13,11 @@ import psycopg2
 DBNAME = "news"
 
 topThreeAuthorQuery = '''
-INSERT QUERY HERE
+SELECT articles.title, count(log.path) AS number
+FROM articles LEFT JOIN log
+ON articles.slug = substring(log.path FROM 10)
+GROUP BY articles.title
+ORDER BY num DESC LIMIT 3;
 '''
 
 mostProlificQuery = '''
