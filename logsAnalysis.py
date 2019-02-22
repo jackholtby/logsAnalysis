@@ -20,12 +20,16 @@ GROUP BY articles.title
 ORDER BY number DESC LIMIT 3;
 '''
 
-mostProlificQuery = '''
-select articles.author, count(log.path) as number
-from articles left join  log
-on articles.slug = substring(log.path from 10)
-group by articles.author
-order by number desc;
+mostPopularQuery = '''
+SELECT authors.name, tmp.number
+FROM (
+SELECT articles.author AS id, count(log.path) AS number
+FROM articles LEFT JOIN log
+ON articles.slug = substring(log.path FROM 10)
+GROUP BY articles.author
+ORDER BY number desc
+) AS tmp
+JOIN authors ON tmp.id = authors.id;
 '''
 
 badDaysQuery = '''
