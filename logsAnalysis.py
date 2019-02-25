@@ -33,40 +33,41 @@ JOIN authors ON tmp.id = authors.id;
 '''
 
 badDaysQuery = '''
-SELECT total, totalError
+SELECT year, month, day, trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
+from
+(
+SELECT tmpOK.year, tmpOK.month, tmpOK.day, total, totalerror
 FROM (
 select date_part('year', time::date) as year,
-date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
+date_part('month', time::date) as month, date_part('day', time::date) as day,
 count(path) as total
 from log
-group by year, monthly, daily
-order by year, monthly, daily
+group by year, month, day
+order by year, month, day
 ) as tmpOK
 JOIN
 (select date_part('year', time::date) as year,
-date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
-count(path) as totalError
+date_part('month', time::date) as month, date_part('day', time::date) as day,
+count(path) as totalerror
 from log where status = '404 NOT FOUND'
-group by year, monthly, daily
-order by year, monthly, daily
+group by year, month, day
+order by year, month, day
 ) as tmpERROR
 ON tmpOK.year = tmpERROR.year
-AND tmpOK.monthly = tmpERROR.monthly
-AND tmpOK.daily = tmpERROR.daily
-;
-'''
-
-select date_part('year', time::date) as year,
-date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
-count(path)
-from log where status = '200 OK'
-group by tmp.year, tmp.monthly, daily
-order by year, monthly, daily;
+AND tmpOK.month = tmpERROR.month
+AND tmpOK.day = tmpERROR.day
+) as meta
+where trunc(cast(totalerror as decimal)/total*100 , 2) > 1;
 '''
 
 db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
 c.execute(topThreeAuthorQuery)
-c.execute(mostProlificQuery)
-c.execute(badDaysQuery)
+topThree = c.fetchall()
+
+for row in topThree:
+    print('"', row[0], '"', "-", row[1], "views")
+
+# c.execute(mostProlificQuery)
+# c.execute(badDaysQuery)
 db.close()
