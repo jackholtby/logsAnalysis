@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 # Name: logsAnalysis
 # Author: Jack Holtby
 # Purpose: Connect to the news postgresql database and return:
@@ -12,6 +13,7 @@ import psycopg2
 
 DBNAME = "news"
 
+# Query to get the top three most popular articles of all time (based on article views)
 topThreeAuthorQuery = '''
 SELECT articles.title, count(log.path) AS number
 FROM articles LEFT JOIN log
@@ -20,6 +22,7 @@ GROUP BY articles.title
 ORDER BY number DESC LIMIT 3;
 '''
 
+# Query to get the most popular author of all time (based on their article views)
 mostPopularQuery = '''
 SELECT authors.name, tmp.number
 FROM (
@@ -32,6 +35,8 @@ ORDER BY number desc
 JOIN authors ON tmp.id = authors.id;
 '''
 
+# Query to get list of days and percentage of requests that lead to Errors
+# only when those errors made up more than 1% of the requests made that day.
 badDaysQuery = '''
 SELECT year, month, day, trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
 from
@@ -60,21 +65,37 @@ AND tmpOK.day = tmpERROR.day
 where trunc(cast(totalerror as decimal)/total*100 , 2) > 1;
 '''
 
+# Connect to the Database
 db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
-#c.execute(topThreeAuthorQuery)
-#topThree = c.fetchall()
 
-#for row in topThree:
-#    print('"', row[0], '"', "-", row[1], "views")
+# Run the top three articles query and output results.
+c.execute(topThreeAuthorQuery)
+topThree = c.fetchall()
 
-#c.execute(mostPopularQuery)
-#mostPopular = c.fetchall()
-#for row in mostPopular:
-#    print(row[0], "-", row[1], "views")
+print("Top Three Articles Of All Time")
+for row in topThree:
+    print('-', row[0], "-", row[1], "views")
 
+print("\n")
+
+# Run the most popular author query and output results.
+c.execute(mostPopularQuery)
+mostPopular = c.fetchall()
+
+print("Most Popular Authors")
+for row in mostPopular:
+    print("-", row[0], "-", row[1], "views")
+
+print("\n")
+
+# Run the bad days query and print out results.
 c.execute(badDaysQuery)
 badDays = c.fetchall()
+
+print("Days With More Than 1% Of Requests Giving Errors")
 for row in badDays:
-    print(row[0], "-", row[1], "-", row[2], " --- ",row[3], "% errors")
+    print("-", row[0], "-", row[1], "-", row[2], " --- ",row[3], "% errors")
+
+# Close the connection to the database
 db.close()
