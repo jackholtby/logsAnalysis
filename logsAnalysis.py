@@ -3,7 +3,7 @@
 # Author: Jack Holtby
 # Purpose: Connect to the news postgresql database and return:
 # 1. The three most popular articles of all time in the database.
-# 2. A list of the authors listed in order of popularity based on article views.
+# 2. A list of the authors in order of popularity based on article views.
 # 3. A list of the days on which more than 1% of requests lead to errors.
 #
 # These will be output in text. No arguments. No input.
@@ -13,7 +13,8 @@ import psycopg2
 
 DBNAME = "news"
 
-# Query to get the top three most popular articles of all time (based on article views)
+# Query to get the top three most popular articles of all time
+# (based on article views)
 topThreeArticlesQuery = '''
 SELECT articles.title, count(log.path) AS number
 FROM articles LEFT JOIN log
@@ -22,7 +23,7 @@ GROUP BY articles.title
 ORDER BY number DESC LIMIT 3;
 '''
 
-# Query to get the most popular author of all time (based on their article views)
+# Query to get the most popular author of all time (based on article views)
 mostPopularQuery = '''
 SELECT authors.name, tmp.number
 FROM (
@@ -38,10 +39,14 @@ JOIN authors ON tmp.id = authors.id;
 # Query to get list of days and percentage of requests that lead to Errors
 # only when those errors made up more than 1% of the requests made that day.
 badDaysQuery = '''
-SELECT year, month, day, trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
+SELECT
+year, month, day,
+trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
 from
 (
-SELECT cast(tmpOK.year as integer), cast(tmpOK.month as integer), cast(tmpOK.day as integer), total, totalerror
+SELECT
+cast(tmpOK.year as integer), cast(tmpOK.month as integer),
+cast(tmpOK.day as integer), total, totalerror
 FROM (
 select date_part('year', time::date) as year,
 date_part('month', time::date) as month, date_part('day', time::date) as day,
@@ -95,7 +100,7 @@ badDays = c.fetchall()
 
 print("Days With More Than 1% Of Requests Giving Errors")
 for row in badDays:
-    print("-", row[0], "-", row[1], "-", row[2], " --- ",row[3], "% errors")
+    print("-", row[0], "-", row[1], "-", row[2], " --- ", row[3], "% errors")
 
 # Close the connection to the database
 db.close()
