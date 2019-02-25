@@ -14,7 +14,7 @@ import psycopg2
 DBNAME = "news"
 
 # Query to get the top three most popular articles of all time (based on article views)
-topThreeAuthorQuery = '''
+topThreeArticlesQuery = '''
 SELECT articles.title, count(log.path) AS number
 FROM articles LEFT JOIN log
 ON articles.slug = substring(log.path FROM 10)
@@ -70,7 +70,7 @@ db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
 
 # Run the top three articles query and output results.
-c.execute(topThreeAuthorQuery)
+c.execute(topThreeArticlesQuery)
 topThree = c.fetchall()
 
 print("Top Three Articles Of All Time")
