@@ -33,7 +33,35 @@ JOIN authors ON tmp.id = authors.id;
 '''
 
 badDaysQuery = '''
-INSERT QUERY HERE
+SELECT total, totalError
+FROM (
+select date_part('year', time::date) as year,
+date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
+count(path) as total
+from log
+group by year, monthly, daily
+order by year, monthly, daily
+) as tmpOK
+JOIN
+(select date_part('year', time::date) as year,
+date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
+count(path) as totalError
+from log where status = '404 NOT FOUND'
+group by year, monthly, daily
+order by year, monthly, daily
+) as tmpERROR
+ON tmpOK.year = tmpERROR.year
+AND tmpOK.monthly = tmpERROR.monthly
+AND tmpOK.daily = tmpERROR.daily
+;
+'''
+
+select date_part('year', time::date) as year,
+date_part('month', time::date) as monthly, date_part('day', time::date) as daily,
+count(path)
+from log where status = '200 OK'
+group by tmp.year, tmp.monthly, daily
+order by year, monthly, daily;
 '''
 
 db = psycopg2.connect(database=DBNAME)
