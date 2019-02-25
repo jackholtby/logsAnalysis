@@ -73,5 +73,8 @@ c = db.cursor()
 #for row in mostPopular:
 #    print(row[0], "-", row[1], "views")
 
-
+c.execute(badDaysQuery)
+badDays = c.fetchall()
+for row in badDays:
+    print(row[0], "-", row[1], "-", row[2], " --- ",row[3], "% errors")
 db.close()
