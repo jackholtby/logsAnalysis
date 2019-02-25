@@ -68,6 +68,10 @@ topThree = c.fetchall()
 for row in topThree:
     print('"', row[0], '"', "-", row[1], "views")
 
-# c.execute(mostProlificQuery)
+c.execute(mostPopularQuery)
+mostPopular = c.fetchall()
+for row in mostPopular:
+    print(row[0], "-", row[1], "views")
+
 # c.execute(badDaysQuery)
 db.close()
