@@ -41,33 +41,33 @@ JOIN authors ON tmp.id = authors.id;
 badDaysQuery = '''
 SELECT
 year, month, day,
-trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
-from
+TRUNC(CAST(totalerror AS DECIMAL)/total*100 , 2) AS percentError
+FROM
 (
 SELECT
-cast(tmpOK.year as integer), cast(tmpOK.month as integer),
-cast(tmpOK.day as integer), total, totalerror
+CAST(tmpOK.year AS INTEGER), cast(tmpOK.month AS integer),
+CAST(tmpOK.day AS INTEGER), total, totalerror
 FROM (
-select date_part('year', time::date) as year,
-date_part('month', time::date) as month, date_part('day', time::date) as day,
-count(path) as total
-from log
-group by year, month, day
-order by year, month, day
-) as tmpOK
+SELECT date_part('year', time::DATE) AS year,
+date_part('month', time::DATE) AS month, date_part('day', time::DATE) AS day,
+count(path) AS total
+FROM log
+GROUP BY year, month, day
+ORDER BY year, month, day
+) AS tmpOK
 JOIN
-(select date_part('year', time::date) as year,
-date_part('month', time::date) as month, date_part('day', time::date) as day,
-count(path) as totalerror
-from log where status = '404 NOT FOUND'
-group by year, month, day
-order by year, month, day
-) as tmpERROR
+(SELECT date_part('year', time::DATE) AS year,
+date_part('month', time::DATE) AS month, date_part('day', time::DATE) AS day,
+count(path) AS totalerror
+FROM log WHERE status = '404 NOT FOUND'
+GROUP BY year, month, day
+ORDER BY year, month, day
+) AS tmpERROR
 ON tmpOK.year = tmpERROR.year
 AND tmpOK.month = tmpERROR.month
 AND tmpOK.day = tmpERROR.day
-) as meta
-where trunc(cast(totalerror as decimal)/total*100 , 2) > 1;
+) AS meta
+WHERE TRUNC(CAST(totalerror AS DECIMAL)/total*100 , 2) > 1;
 '''
 
 # Connect to the Database
