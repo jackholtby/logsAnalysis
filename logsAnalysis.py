@@ -36,7 +36,7 @@ badDaysQuery = '''
 SELECT year, month, day, trunc(cast(totalerror as decimal)/total*100 , 2) as percentError
 from
 (
-SELECT tmpOK.year, tmpOK.month, tmpOK.day, total, totalerror
+SELECT cast(tmpOK.year as integer), cast(tmpOK.month as integer), cast(tmpOK.day as integer), total, totalerror
 FROM (
 select date_part('year', time::date) as year,
 date_part('month', time::date) as month, date_part('day', time::date) as day,
@@ -62,16 +62,16 @@ where trunc(cast(totalerror as decimal)/total*100 , 2) > 1;
 
 db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
-c.execute(topThreeAuthorQuery)
-topThree = c.fetchall()
+#c.execute(topThreeAuthorQuery)
+#topThree = c.fetchall()
 
-for row in topThree:
-    print('"', row[0], '"', "-", row[1], "views")
+#for row in topThree:
+#    print('"', row[0], '"', "-", row[1], "views")
 
-c.execute(mostPopularQuery)
-mostPopular = c.fetchall()
-for row in mostPopular:
-    print(row[0], "-", row[1], "views")
+#c.execute(mostPopularQuery)
+#mostPopular = c.fetchall()
+#for row in mostPopular:
+#    print(row[0], "-", row[1], "views")
 
-# c.execute(badDaysQuery)
+
 db.close()
