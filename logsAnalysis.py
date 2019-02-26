@@ -22,7 +22,6 @@ mostPopularTemp = '''
 badDaysTemp = '''
 %s/%s/%s - %s%% errors'''
 
-
 # Query to get the top three most popular articles of all time
 # (based on article views)
 topThreeArticlesQuery = '''
@@ -84,24 +83,26 @@ WHERE TRUNC(CAST(totalerror AS DECIMAL)/total*100 , 2) > 1;
 db = psycopg2.connect(database=DBNAME)
 c = db.cursor()
 
-# Run the top three articles query and output results.
+# Run the top three articles query.
 c.execute(topThreeArticlesQuery)
 topThree = c.fetchall()
 topThreeOutput = "".join(topThreeTemp % (title, number)
                          for title, number in topThree)
 
-# Run the most popular author query and output results.
+# Run the most popular author query.
 c.execute(mostPopularQuery)
 mostPopular = c.fetchall()
 mostPopularOutput = "".join(mostPopularTemp %
                             (name, number) for name, number in mostPopular)
 
-# Run the bad days query and print out results.
+# Run the bad days query.
 c.execute(badDaysQuery)
 badDays = c.fetchall()
 badDaysOutput = "".join(badDaysTemp %
                         (day, month, year, percenterror)
                         for day, month, year, percenterror in badDays)
+
+# Print out results nicely.
 
 print("1. What are the most popular articles of all time?",
       topThreeOutput, "\n")
