@@ -79,8 +79,16 @@ AND tmpOK.day = tmpERROR.day
 WHERE TRUNC(CAST(totalerror AS DECIMAL)/total*100 , 2) > 1;
 '''
 
-# Connect to the Database
-db = psycopg2.connect(database=DBNAME)
+# Connect to the Database....if it's there....ooohhheeeooohhheeeee
+try:
+    db = psycopg2.connect(database=DBNAME)
+except psycopg2.Error as error:
+    print("Uh nuuu bruuu, the detabis ain't connictible to.")
+    print(error.pgerror)
+    print(error.diag.message_detail)
+    sys.exit(1)
+
+
 c = db.cursor()
 
 # Run the top three articles query.
