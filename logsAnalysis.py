@@ -13,6 +13,16 @@ import psycopg2
 
 DBNAME = "news"
 
+topThreeTemp = '''
+"%s" - with %s views'''
+
+mostPopularTemp = '''
+"%s" - %s views'''
+
+badDaysTemp = '''
+%s/%s/%s - %s%% errors'''
+
+
 # Query to get the top three most popular articles of all time
 # (based on article views)
 topThreeArticlesQuery = '''
@@ -40,7 +50,7 @@ JOIN authors ON tmp.id = authors.id;
 # only when those errors made up more than 1% of the requests made that day.
 badDaysQuery = '''
 SELECT
-year, month, day,
+day, month, year,
 TRUNC(CAST(totalerror AS DECIMAL)/total*100 , 2) AS percentError
 FROM
 (
@@ -77,30 +87,28 @@ c = db.cursor()
 # Run the top three articles query and output results.
 c.execute(topThreeArticlesQuery)
 topThree = c.fetchall()
-
-print("Top Three Articles Of All Time")
-for row in topThree:
-    print('-', row[0], "-", row[1], "views")
-
-print("\n")
+topThreeOutput = "".join(topThreeTemp % (title, number)
+                         for title, number in topThree)
 
 # Run the most popular author query and output results.
 c.execute(mostPopularQuery)
 mostPopular = c.fetchall()
-
-print("Most Popular Authors")
-for row in mostPopular:
-    print("-", row[0], "-", row[1], "views")
-
-print("\n")
+mostPopularOutput = "".join(mostPopularTemp %
+                            (name, number) for name, number in mostPopular)
 
 # Run the bad days query and print out results.
 c.execute(badDaysQuery)
 badDays = c.fetchall()
+badDaysOutput = "".join(badDaysTemp %
+                        (day, month, year, percenterror)
+                        for day, month, year, percenterror in badDays)
 
-print("Days With More Than 1% Of Requests Giving Errors")
-for row in badDays:
-    print("-", row[0], "-", row[1], "-", row[2], " --- ", row[3], "% errors")
+print("1. What are the most popular articles of all time?",
+      topThreeOutput, "\n")
+print("2. Who are the most popular article authors of all time?",
+      mostPopularOutput, "\n")
+print("3. On which days did more than 1% of requests lead to errors?",
+      badDaysOutput)
 
 # Close the connection to the database
 db.close()
