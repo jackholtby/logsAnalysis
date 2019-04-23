@@ -1,14 +1,16 @@
-# Logs Analysis - Udacity Project (1)
-### Author: Jack Holtby
+# Logs Analysis - Udacity Project
+Author: Jack Holtby
 
-## Purpose: Connect to the news postgresql database and return:
-* 1. The three most popular articles of all time in the database.
-* 2. A list of the authors in order of popularity based on article views.
-* 3. A list of the days on which more than 1% of requests lead to errors.
+## Purpose
+Connect to the news postgresql database and return:
+
+* The three most popular articles of all time in the database.
+* A list of the authors in order of popularity based on article views.
+* A list of the days on which more than 1% of requests lead to errors.
 
 These will be output in text. No arguments. No input.
 
-## Program Design:
+## Design:
 
 This is a Python 3 program. It runs on a PostgreSQL database which contains
 three tables: articles, authors, and log.
@@ -17,26 +19,26 @@ The three queries are placed inside variables to separate database requests
 from code. We've avoided using views to eradicate any need for making changes
 to the database.
 
-## How to run the code:
+## Installation:
 
 To run the code, you'll need to setup the database.
 
-* 1. Install Python (version 3).
+#### 1. Install Python (version 3).
+
 If you're running linux, run:
 
-apt install python3 python3-pip
+`apt install python3 python3-pip`
 
-If you're using Ubuntu then append "sudo" to the front of that command.
+If you're using Ubuntu then append `sudo` to the front of that command.
 If you're using Windows or Mac you can find python through the following links:
-https://www.python.org/downloads/mac-osx/
-https://www.python.org/downloads/windows/
+[mac](https://www.python.org/downloads/mac-osx/) [windows](https://www.python.org/downloads/windows/)
 
-Installation instructions can be found here: https://wiki.python.org/moin/BeginnersGuide/Download.
+Installation instructions can be found [here](https://wiki.python.org/moin/BeginnersGuide/Download).
 
-* 2. Install VirtualBox
+#### 2. Install VirtualBox
 You can install virtualbox on debian based linux distros with:
 
-apt install virtualbox
+`apt install virtualbox`
 
 If you're running Debian unstable then you'll be getting VirtualBox version 6.1
 or some such thing. This will not work with vagrant for some reason. You'll be
@@ -44,43 +46,42 @@ able to boot (from virtualbox, don't even try booting using "vagrant up"),
 but the shared folders won't work. So I recommend installing on stable or
 equivalent.
 
-Get the old version that works from here: https://www.virtualbox.org/wiki/Download_Old_Builds_5_1
+Get the old version that works [here](https://www.virtualbox.org/wiki/Download_Old_Builds_5_1).
 
-* 3. Install vagrant
-You install vagrant to run the virtualbox system. You can find it here:
-https://www.vagrantup.com/downloads.html
+#### 3. Install Vagrant
+
+You install vagrant to run the virtualbox system. You can find it [here](https://www.vagrantup.com/downloads.html).
 
 Or you can install it using apt if you're using a real operating system.
 
-apt install vagrant
+`apt install vagrant`
 
-Add "sudo" if you're using Ubuntu or other derivatives.
+Add `sudo` if you're using Ubuntu or derivatives.
 
 You'll then need to download the configuration for the system that will run
-on virtualbox and vagrant. This can be downloaded here:
-https://s3.amazonaws.com/video.udacity-data.com/topher/2018/April/5acfbfa3_fsnd-virtual-machine/fsnd-virtual-machine.zip
+on virtualbox and vagrant. This can be downloaded [here](https://s3.amazonaws.com/video.udacity-data.com/topher/2018/April/5acfbfa3_fsnd-virtual-machine/fsnd-virtual-machine.zip).
 
 Unzip this file into a directory of your choice. Enter the directory called
 'vagrant' inside the directory you just unzipped. While inside the vagrant
 directory, run the following command:
 
-vagrant up
+`vagrant up`
 
 This will take quite some time to set up, depending on your internet connection.
 
-* 4. Log into the vagrant os
+#### 4. Log into the vagrant VM
 
 You can log into the system with:
 
-vagrant ssh
+`vagrant ssh`
 
 While logged in, you can find the data in the /vagrant folder.
 
 If it is not there, see the next step.
 
-* 5. Set up the data.
-The data for this project can be found here:
-https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip
+#### 5. Set up the data.
+
+The data for this project can be found [here](https://d17h27t6h515a5.cloudfront.net/topher/2016/August/57b5f748_newsdata/newsdata.zip).
 
 Download it and unzip it into the directory that is shared with vagrant.
 This is the directory called vagrant inside the unzipped folder from the vagrant
@@ -89,25 +90,25 @@ installation.
 There should be a file called newsdata.sql in the vagrant directory now.
 Run the following command:
 
-psql -d news -f newsdata.sql
+`psql -d news -f newsdata.sql`
 
 If you get errors like psql: FATAL: database "news" does not exist, then you
 need to create it.
 
 Run the following command:
 
-psql
+`psql`
 
 Then you will be inside a PostgreSQL interactive prompt. Create the database with:
 
-create database news;
+`create database news;`
 
 Then run the first command in this section again. Shoobeedoobeedooo
 
-* 6. And now that's all setup, you can copy the logsAnalysis file into your
+#### 6. And now that's all setup, you can copy the logsAnalysis file into your
 shared vagrant folder and then log into vagrant and run it with the following:
 
-python3 logsAnalysis.py
+`python3 logsAnalysis.py`
 
 
 Note: I looked up methods and ways to do database queries and output code
